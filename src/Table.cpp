@@ -44,6 +44,7 @@ void Table::print()
 }
 
 void Table::printTopDelimiter(){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
 	cout << "┌──";
 	for(int i=0; i<std::to_string(rowCount).size(); i++) cout << "─";
     for(int i=0; i<colCount; i++) cout << "┬───";
@@ -51,19 +52,24 @@ void Table::printTopDelimiter(){
 }
 
 void Table::printColumnIndices(){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
     cout << "│  ";
 	for(int i=0; i<std::to_string(rowCount).size(); i++) cout << " ";
 	cout << "│";
 	for(int i=0; i<colCount; i++){
         if(i<26){
             cout << " ";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
             cout << (char)(i+'A');
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
             cout << " │";
         }
         else{
-            cout << " ";
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
             cout << (char)(i/26+'A'-1);
             cout << (char)(i%26+'A');
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
+            cout << " ";
             cout << "│";
         }
 	}
@@ -71,6 +77,7 @@ void Table::printColumnIndices(){
 
 void Table::printTableBase(){
 	for(int i=0; i<rowCount; i++){
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
         if(i) cout << '\n';
         cout << "├─";
         for(int j=0; j<=std::to_string(rowCount).size(); j++) cout << "─";
@@ -78,23 +85,33 @@ void Table::printTableBase(){
         cout << "┤\n";
 
         std::string nstring = std::to_string(i+1);
-        cout << "│ " << nstring;
+        cout << "│ ";
         for(int j=0; j<std::to_string(rowCount).size()-nstring.size(); j++)cout << " ";
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 13);
+        cout<< nstring;
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
         cout << " │";
+        SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
 
         for(int j=0; j<colCount; j++){
             cout << " ";
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), j+i);
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), buffer[i][j].clr);
             cout << buffer[i][j].val;
-            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY);
+            SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
             cout << " │";
         }
 	}
 }
 
 void Table::printBottomDelimiter(){
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 8);
     cout << "└──";
 	for(int i=0; i<std::to_string(rowCount).size(); i++) cout << "─";
     for(int i=0; i<colCount; i++) cout << "┴───";
 	cout << "┘";
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 15);
+}
+
+unsigned int Table::getWidthInChar(){
+    return ((string)"└──").size()+std::to_string(rowCount).size()+colCount*((string)"┴───").size()+((string)"┘").size();
 }

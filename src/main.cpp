@@ -1,24 +1,13 @@
 #include <bits/stdc++.h>
-#include <locale>
 #include "Table.h"
+#include "Console.h"
 #include <windows.h>
 using namespace std;
 
 vector<string> cities;
 
-void testTable(){
-    Table table(3,3);
-    for(int i=0;i<3;i++){
-        for(int j=0;j<3;j++){
-            table[i][j].val = 'A'+i+j;
-            cout<<table[i][j].val<<" ";
-        }
-        cout<<"\n";
-    }
-    table.print();
-}
-
-void inputCities(){
+void inputCities()
+{
     ifstream cityConfig("cities.config");
     string city;
     while(cityConfig>>city) cities.push_back(city);
@@ -26,9 +15,17 @@ void inputCities(){
 }
 
 int main(){
-    SetConsoleOutputCP(65001);
-    testTable();
-    inputCities();
-    for(auto city: cities) cout<<city<<" ";
+    //inputCities();
+    //for(auto city: cities) cout<<city<<" ";
+    Table table(30,30);
+    for(int i=0;i<table.rowCount;i++){
+        for(int j=0;j<table.colCount;j++){
+            table[i][j].val = 'A';
+        }
+    }
+    unsigned int tableWidthInChar = table.getWidthInChar();
+    AdjustConsole(L"Lucida Console",14,20,tableWidthInChar);
+    table.print();
+    getchar();
 }
 
