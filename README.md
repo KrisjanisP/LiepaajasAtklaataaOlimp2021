@@ -2,6 +2,12 @@
 > Uzdevums - izveidot spēli "Burtu jūklis". Liela izmēra tabulā ierakstīti Liepājas objektu nosaukumi; vienā rūtiņā ir viens burts. Spēlētājam jāatrod un jāizsvītro objektu nosaukumi. Spēles noslēgumā no neizsvītotajiem burtiem vai izsvītroto nosaukumu sākuma burtiem spēlētājam jāizveido nākamā apceļojamā objekta nosaukums (katram konkursa dalībniekam tas būs cits).
 ## Risinājuma darbības princips
 Palaižot run.bat tiek nokompilēts pirmkods, atvērta konsole un ielasīts pilsētu saraksts no cities.config, paturot meklējamo nākamo apceļojamo objektu kā noslēpumu, kurš, kārtējo reizi uzsākot konsoles lietojumprogrammu, nemainās. Konsolē tiek attēlota tabula, veidota no ASCII simboliem. Tabulas dati katrā reizē tiek randomizēti. Pēc spēles pabeigšanas laiks tiek pieglabāts rezultātu teksta failā kā tabula.
+## Darbības vides prasības
+- Operētājsistēma - Windows Vista vai jaunāka.
+- Kompilēšanai:
+  - C++11 kompilators
+  - Boost C++ bibliotēka
+- Pēc iespējas lielāks monitors :D
 ## Pēc noklusējama apskatāmie objekti
 - Spīķeris
 - Raiņa parks

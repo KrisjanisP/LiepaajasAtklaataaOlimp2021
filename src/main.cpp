@@ -26,6 +26,12 @@ int main(){
     unsigned int tableWidthInChar = table.getWidthInChar();
     AdjustConsole(L"Lucida Console",14,20,tableWidthInChar);
     table.print();
-    getchar();
+
+    //freeze conosle
+    while(true){
+        cin.get();
+        system("cls");
+        table.print();
+    }
 }
 
