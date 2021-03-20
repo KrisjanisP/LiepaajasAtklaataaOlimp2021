@@ -3,7 +3,8 @@ typedef unsigned int uint;
 struct TableUpdate{
     int row, col;
     int clr;
-    char val;
+    int byteCount;
+    char arr[20];
 };
 
 void constructTable(uint rowCount, uint colCount);

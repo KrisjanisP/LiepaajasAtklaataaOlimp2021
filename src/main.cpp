@@ -2,47 +2,109 @@
 #include "Console/Console.h"
 #include "Puzzle/Puzzle.h"
 #include "Table/Table.h"
+#include "ConsoleUI/ConsoleUI.h"
 #include <windows.h>
-#define MAX_ROW_COUNT 25
-#define MAX_COL_COUNT 46
 #define DEFAULT_SYMBOL u8"?"
+#define NICE_CODE 69
+#define BAD_CODE 96
 using namespace std;
 
 typedef unsigned int uint;
+vector<string> PLACES;
+int MAX_ROW_COUNT = 25;
+int MAX_COL_COUNT = 46;
 
-vector<string> places;
-
-void inputPlaces(){
-    ifstream placeConfig("places.config");
+void processPlacesConfig(){
+    ifstream placesConfig("places.config");
     string place;
-    while(placeConfig>>place) places.push_back(place);
-    placeConfig.close();
+    while(placesConfig>>place) PLACES.push_back(place);
+    placesConfig.close();
 }
 
-void testTable(){
-    Table table(20, 20, "table-message-queue");
-    for(int i=0;i<table.rowCount;i++){
-        for(int j=0;j<table.colCount;j++){
-            table[i][j].val = 'A';
+void processPuzzleConfig(){
+    ifstream puzzleConfig("puzzle.config");
+    string str;
+    while(puzzleConfig>>str){
+        if(str=="MAX_ROW_COUNT"){
+            cin>>str;
+            MAX_ROW_COUNT = stoi(str);
+        }
+        if(str=="MAX_COL_COUNT"){
+            cin>>str;
+            MAX_COL_COUNT = stoi(str);
         }
     }
+    puzzleConfig.close();
+}
+
+COORD boardToCartesianCoords(string inputString){
+    COORD coord {X:0, Y:0};
+    for(int i=0; i<inputString.size(); i++){
+        if(inputString[i]>='0' && inputString[i]<='9'){
+            coord.Y=coord.Y*10 + (int)(inputString[i]-'0');
+            continue;
+        }
+        if(inputString[i]>='A' && inputString[i]<='Z'){
+            coord.X=coord.X*26 + (int)(inputString[i]-'A'+1);
+        }
+    }
+    coord.X--;
+    coord.Y--;
+    return coord;
+}
+
+bool validCoordinates(COORD start, COORD end){
+    if(start.X==end.X) return true; //vertical
+    if(start.Y==end.Y) return true; //horizontal
+    if(fabs(start.X-end.X)==fabs(start.Y-end.Y)) return true; //diagonal
+    return false;
+}
+
+string fetchWord(Table &table, COORD start, COORD end){
+    string res;
+
+    COORD dir {
+        X: (end.X==start.X)?0:(end.X-start.X)/fabs(end.X-start.X),
+        Y: (end.Y==start.Y)?0:(end.Y-start.Y)/fabs(end.Y-start.Y)
+    };
+    
+    for(COORD pos=start; pos.X!=end.X || pos.Y!=end.Y; pos.X+=dir.X, pos.Y+=dir.Y){
+        res += table[pos.Y][pos.X].val;
+    }
+    res += table[end.Y][end.X].val;
+
+    return res;
+}
+
+bool validPlace(string place){
+    for(auto i:PLACES){
+        if(place==i) return true;
+    }
+    return false;
+}
+
+void markCells(Table& table, COORD start, COORD end){
+    COORD dir {
+        X: (end.X==start.X)?0:(end.X-start.X)/fabs(end.X-start.X),
+        Y: (end.Y==start.Y)?0:(end.Y-start.Y)/fabs(end.Y-start.Y)
+    };
+     
+    for(COORD pos=start; pos.X!=end.X || pos.Y!=end.Y; pos.X+=dir.X, pos.Y+=dir.Y){
+        table[pos.Y][pos.X].clr = 250;
+    }
+    table[end.Y][end.X].clr = 250;
     table.update();
 }
 
-void queryUser(){
-    cout<<"here!!!";
-}
-
 int main(){
-    inputPlaces();
+    processPlacesConfig();
+    processPuzzleConfig();
     adjustConsole("right",1000,1000);
-    //testTable();
 
-    //enable random number
     std::srand( ( unsigned int )std::time( nullptr ) );
 
     Matrix<string> puzzle(MAX_ROW_COUNT, MAX_COL_COUNT, DEFAULT_SYMBOL);
-    generatePuzzle(places, puzzle);
+    generatePuzzle(PLACES, puzzle);
     
     Table table(puzzle.rowCount, puzzle.colCount, "table-message-queue");
     for(int i=0;i<puzzle.rowCount;i++){
@@ -51,83 +113,41 @@ int main(){
         }
     }
     table.update();
-    queryUser();
-    system("pause");
-}
-/*
-int answerCheck(uint beginX, uint beginY, uint endX, uint endY, Table table){
-    if(beginX != endX && beginY != endY && fabs(beginX-beginY) != fabs(endX-endY) ){
-        return -1;
-    }
 
-    string guessedWord = "";
-    COORD myLocation {
-        X: (short int)beginX,
-        Y: (short int)beginY
-    };
-    COORD myDirection {
-        X: 0, 
-        Y: 0
-    };
+    ConsoleUI consoleUI(PLACES);
+    int foundCount = 0;
+    set<pair<string,string>> visited;
+    while(foundCount<PLACES.size()){
+        string startBoardCoord, endBoardCoord;
+        consoleUI.queryUser(startBoardCoord, endBoardCoord);
 
-    if(endX - beginX > 0) myDirection.X = 1;
-    else if(endX - beginX < 0) myDirection.X = -1;
-    if(endY - beginY > 0) myDirection.Y = 1;
-    else if(endY - beginY < 0) myDirection.Y = -1;
+        COORD start = boardToCartesianCoords(startBoardCoord);
+        COORD end = boardToCartesianCoords(endBoardCoord);
 
-    for(; !(myLocation.X==endX && myLocation.Y==endY);){
-        guessedWord.push_back(table[myLocation.Y][myLocation.X].val);
-    }
-
-    for(int i=0; i<places.size(); i++){
-        if(guessedWord == places[i]){
-            return i;
+        if(visited.count({startBoardCoord, endBoardCoord})
+            ||visited.count({endBoardCoord, startBoardCoord})){
+            consoleUI.addLog("Koordinātes jau tika apskatītas :(", INFO_MESSAGE);
+            continue;
         }
-    }
-    return -1;
-}
 
-COORD coordinateConversion(string inputString){
-    COORD coord;
-    for(int i=0; i<inputString.size(); i++){
-        if(inputString[i]>=48 && inputString[i]<=57){
-            coord.X=coord.X*10 + (int)(inputString[i]-'0');
-        }
-        else{
-            if(i==inputString.size()-1){
-                coord.Y++;
-                coord.Y *= 26;
-            }
-            else coord.Y += (int)(inputString[i]-'A');
-        }
-    }
-    coord.X--;
-    return coord;
-}
+        visited.insert({startBoardCoord, endBoardCoord}),
+        visited.insert({endBoardCoord, startBoardCoord});
 
-void checkInput(string inputBegin, string inputEnd, Table &table){
-    COORD wordBegin = coordinateConversion(inputBegin);
-    COORD wordEnd = coordinateConversion(inputEnd);
-    
-    int wordIndex = answerCheck(wordBegin.X, wordBegin.Y, wordEnd.X, wordEnd.Y, table);
-    if(wordIndex == -1){
-        //nav pareizi
-    }
-    else{
-        COORD myLocation = wordBegin;
-        COORD myDirection {
-            X: 0, 
-            Y: 0
-        };
-        if(wordEnd.X - wordBegin.X > 0) myDirection.X = 1;
-        else if(wordEnd.X - wordBegin.X < 0) myDirection.X = -1;
-        if(wordEnd.Y - wordBegin.Y > 0) myDirection.Y = 1;
-        else if(wordEnd.Y - wordBegin.Y < 0) myDirection.Y = -1;
-        
-        for(; !(myLocation.X==wordEnd.X && myLocation.Y==wordEnd.Y);){
-            table[myLocation.Y][myLocation.X].clr = 250;
+        if(!validCoordinates(start, end)){
+            consoleUI.addLog("Koordinātes ir nekorektas... :(", INFO_MESSAGE);
+            continue;
+        }
+
+        string place = fetchWord(table, start, end);
+        consoleUI.addLog("Atrastais vārds -\""+place+"\"", DEFAULT_CLR);
+        cout<<place<<"\n";
+        if(validPlace(place)){
+            foundCount++;
+            markCells(table, start, end);
+            consoleUI.markPlace(place);
+            consoleUI.addLog("Vārds veiksmīgi atzīmēts kā atrasts :)", SUCCESS_MESSAGE);
+        }else{
+            consoleUI.addLog("Vārds neietilpst sarakstā... :(", INFO_MESSAGE);
         }
     }
 }
-
-*/

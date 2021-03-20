@@ -4,12 +4,13 @@ mkdir bin
 echo Copying confing files
 copy src\Config\places.config bin
 echo Compiling main source code
-g++ -o bin\main.exe ^
+g++ -w -o bin\main.exe ^
     src\main.cpp ^
     src\Table\Table.cpp ^
     src\Matrix\Matrix.cpp ^
     src\Puzzle\Puzzle.cpp ^
     src\Console\Console.cpp ^
+    src\ConsoleUI\ConsoleUI.cpp ^
     -I "C:/Program Files/boost_1_62_0" ^
     || exit /b
 echo Compiling child source code

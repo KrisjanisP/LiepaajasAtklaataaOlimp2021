@@ -73,11 +73,12 @@ void removeWord(vector<string>& chars, int y, int x, int dir, vector<string>& UT
     }
 }
 
-void genPuzzle(int wordIndex, vector<string>& words, Matrix<string>& puzzle)
+void genPuzzle(int wordIndex, vector<string>& words, Matrix<string>& puzzle, bool& found)
 {
+    if(found) return;
     if(wordIndex==words.size()){
-        outputPuzzle(puzzle);
-        system("pause");
+        //outputPuzzle(puzzle);
+        found = true;
         return ;
     }
     //put the word somewhere ffs
@@ -92,7 +93,8 @@ void genPuzzle(int wordIndex, vector<string>& words, Matrix<string>& puzzle)
                     if(canPlace(i,j,d%8,UTF8Word, puzzle)){
                         vector<string> chars; //replaced chars
                         placeWord(chars,i,j,d%8,UTF8Word,puzzle);
-                        genPuzzle(wordIndex+1, words, puzzle);
+                        genPuzzle(wordIndex+1, words, puzzle, found);
+                        if(found) return;
                         removeWord(chars, i,j,d%8,UTF8Word,puzzle);
                     }
                 }
@@ -108,7 +110,8 @@ void genPuzzle(int wordIndex, vector<string>& words, Matrix<string>& puzzle)
                     if(canPlace(i,j,d%8,UTF8Word, puzzle)){
                         vector<string> chars; //replaced chars
                         placeWord(chars,i,j,d%8,UTF8Word,puzzle);
-                        genPuzzle(wordIndex+1, words, puzzle);
+                        genPuzzle(wordIndex+1, words, puzzle, found);
+                        if(found) return;
                         removeWord(chars, i,j,d%8,UTF8Word,puzzle);
                     }
                 }
@@ -128,5 +131,6 @@ void sortByLen(vector<string>& words)
 void generatePuzzle(vector<string> words, Matrix<string> &puzzle)
 {
     sortByLen(words);
-    genPuzzle(0, words, puzzle);
+    bool found = false;
+    genPuzzle(0, words, puzzle, found);
 }

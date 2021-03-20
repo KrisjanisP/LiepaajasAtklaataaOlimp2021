@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
         cout<<"Please provide the required arguments"<<endl;
         return 1;
     }
-    adjustConsole("left",1000,800);
+    adjustConsole("left",1700,900);
     
     rowCount = stoi(argv[1]);
     colCount = stoi(argv[2]);

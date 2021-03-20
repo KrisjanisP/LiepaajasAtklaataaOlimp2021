@@ -7,7 +7,7 @@ typedef unsigned int uint;
 
 class CharCell{
 public:
-    string val = u8"-";
+    string val = u8"?";
     int clr=240;
 };
 

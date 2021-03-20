@@ -39,7 +39,11 @@ void updateTable(TableUpdate tableUpdate, uint rowCount, uint colCount){
         cellCoord
     );
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), tableUpdate.clr);
-    cout << tableUpdate.val;
+    string value;
+    for(int i=0;i<tableUpdate.byteCount;i++){
+        value += tableUpdate.arr[i];
+    }
+    cout<<value<<flush;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), BLACK_FG_WHITE_BG_CLR);
 }
 

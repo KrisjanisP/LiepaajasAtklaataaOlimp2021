@@ -9,7 +9,7 @@ struct TableUpdate{
     int row, col;
     int clr;
     int byteCount;
-    char arr[4];
+    char arr[20];
 };
 
 Table::Table(unsigned int _rowCount, unsigned int _colCount, string mqName)
@@ -73,7 +73,7 @@ void Table::updateCell(uint cellY, uint cellX){
         row: cellY,
         col: cellX,
         clr: buffer[cellY][cellX].clr,
-        byteCount: buffer[cellY][cellX].val.size()
+        byteCount: (int)buffer[cellY][cellX].val.size()
     };
     for(uint i=0;i<buffer[cellY][cellX].val.size();i++){
         tableUpdate.arr[i] = buffer[cellY][cellX].val[i];
