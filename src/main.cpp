@@ -150,4 +150,15 @@ int main(){
             consoleUI.addLog("Vārds neietilpst sarakstā... :(", INFO_MESSAGE);
         }
     }
+    GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
+    system("CLS");
+    GetStdHandle(STD_OUTPUT_HANDLE), {0, 0});
+    string end_word="";
+    cout<<"Ievadi vārdu no pirmajiem 27 neiezīmētajiem simboliem, ieskaitot domu zīmes un lielos burtus\n"<<flush;
+    cin >> end_word;
+    while(end_word != "Jaunākais-viedais-luksofors"){
+        cout<<"Nepareizi, mini vēlreiz\n"<<flush;
+        cin >> end_word;
+    }
+    cout<<"Pareizi! Tu pabeidzi šo burtu jūkli!";
 }
