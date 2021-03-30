@@ -20,5 +20,5 @@ g++ -o bin\child.exe ^
     src\Console\Console.cpp ^
     -I "C:/Program Files/boost_1_62_0" ^
     || exit /b
-rem echo Running compiled executable
-rem .\bin\main.exe || exit /b
+echo Running compiled source code
+run.bat

@@ -11,6 +11,7 @@ class ConsoleUI{
 public:
     ConsoleUI(vector<string> places);
     void resetCursor();
+    void outputList(vector<string> places);
     void markPlace(string place);
     void addLog(string message, int type_code);
     void queryUser(string& startBoardCoord, string& endBoardCoord);
