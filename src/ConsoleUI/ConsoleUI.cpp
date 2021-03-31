@@ -6,7 +6,7 @@ ConsoleUI::ConsoleUI(vector<string> places){
     cout<<flush;
     system("cls");
     outputList(places);
-    cursorPosition = {X:0,Y:places.size()};
+    cursorPosition = {X:0,Y:(short)places.size()};
     allPlaces = places;
 }
 
