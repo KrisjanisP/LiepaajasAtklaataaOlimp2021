@@ -102,31 +102,31 @@ void updateTable(TableUpdate tableUpdate, uint rowCount, uint colCount){
 
 void printTopDelimiter(uint rowCount, uint colCount){
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-    cout << "┌──";
-	for(int i=0; i<to_string(rowCount).size(); i++) cout << "─";
-    for(int i=0; i<colCount; i++) cout << "┬───";
-	cout << "┐";
+    cout << "┌──"<<flush;
+	for(int i=0; i<to_string(rowCount).size(); i++) cout << "─"<<flush;
+    for(int i=0; i<colCount; i++) cout << "┬───"<<flush;
+	cout << "┐"<<flush;
 }
 
 void printColumnIndices(uint rowCount, uint colCount){
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-    cout << "│  ";
-	for(int i=0; i<to_string(rowCount).size(); i++) cout << " ";
-	cout << "│";
+    cout << "│  "<<flush;
+	for(int i=0; i<to_string(rowCount).size(); i++) cout << " "<<flush;
+	cout << "│"<<flush;
 	for(int i=0; i<colCount; i++){
         if(i<26){
-            cout << " ";
+            cout << " "<<flush;
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PURPLE_FG_WHITE_BG_CLR);
-            cout << (char)(i+'A');
+            cout << (char)(i+'A')<<flush;
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-            cout << " │";
+            cout << " │"<<flush;
         }
         else{
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PURPLE_FG_WHITE_BG_CLR);
-            cout << (char)(i/26+'A'-1);
-            cout << (char)(i%26+'A');
+            cout << (char)(i/26+'A'-1)<<flush;
+            cout << (char)(i%26+'A')<<flush;
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-            cout << " │";
+            cout << " │"<<flush;
         }
 	}
 }
@@ -134,32 +134,32 @@ void printColumnIndices(uint rowCount, uint colCount){
 void printTableBase(uint rowCount, uint colCount){
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
 	for(int i=0; i<rowCount; i++){
-        if(i) cout << '\n';
-        cout << "├─";
-        for(int j=0; j<=to_string(rowCount).size(); j++) cout << "─";
-        for(int j=0; j<colCount; j++) cout << "┼───";
-        cout << "┤\n";
+        if(i) cout << '\n'<<flush;
+        cout << "├─"<<flush;
+        for(int j=0; j<=to_string(rowCount).size(); j++) cout << "─"<<flush;
+        for(int j=0; j<colCount; j++) cout << "┼───"<<flush;
+        cout << "┤\n"<<flush;
 
         string nstring = to_string(i+1);
-        cout << "│ ";
-        for(int j=0; j<to_string(rowCount).size()-nstring.size(); j++)cout << " ";
+        cout << "│ "<<flush;
+        for(int j=0; j<to_string(rowCount).size()-nstring.size(); j++)cout << " "<<flush;
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), PURPLE_FG_WHITE_BG_CLR);
-        cout<< nstring;
+        cout<< nstring<<flush;
         SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-        cout << " │";
+        cout << " │"<<flush;
 
         for(int j=0; j<colCount; j++){
-            cout << " ";
-            cout << "?";
-            cout << " │";
+            cout << " "<<flush;
+            cout << "?"<<flush;
+            cout << " │"<<flush;
         }
 	}
 }
 
 void printBottomDelimiter(uint rowCount, uint colCount){
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), GREY_FG_WHITE_BG_CLR);
-    cout << "└──";
-	for(int i=0; i<to_string(rowCount).size(); i++) cout << "─";
-    for(int i=0; i<colCount; i++) cout << "┴───";
-	cout << "┘";
+    cout << "└──"<<flush;
+	for(int i=0; i<to_string(rowCount).size(); i++) cout << "─"<<flush;
+    for(int i=0; i<colCount; i++) cout << "┴───"<<flush;
+	cout << "┘"<<flush;
 }

@@ -1,4 +1,5 @@
 #include <bits/stdc++.h>
+#include "../Utils/Utils.h"
 #include <boost/interprocess/ipc/message_queue.hpp>
 
 using namespace std;
@@ -21,6 +22,9 @@ public:
     void update(); // updates printed table content <- ievieto daudz figņas queue
 
     CharCell *& operator[](uint index);
+
+    string fetchWord(Coord start, Coord end);
+    void markCells(Coord start, Coord end);
 private:
     CharCell ** buffer; // table data 
     CharCell ** printed; // table printed data

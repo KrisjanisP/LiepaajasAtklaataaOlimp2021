@@ -1,45 +1,27 @@
 
 #include "ConsoleUI.h"
 
-ConsoleUI::ConsoleUI(vector<string> places){
+ConsoleUI::ConsoleUI(vector<string> _places){
+    //Set private class variable
+    places = _places;
+
+    //Set background color
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
     cout<<flush;
     system("cls");
-    outputList(places);
+
+    //Output all places to be found
+    outputList();
     cursorPosition = {X:0,Y:(short)places.size()};
-    allPlaces = places;
 }
 
-void ConsoleUI::resetCursor(){
-
-    SetConsoleCursorPosition(
-        GetStdHandle( STD_OUTPUT_HANDLE ),
-        cursorPosition
-    );
-}
-
-vector<string> MultiByteCharsToStringsKvass(string& str)
-{
-    vector<string> res;
-    char* s = &str[0];
-    string multiByteChar;
-    while (*s){
-        if((*s & 0xc0) != 0x80 && multiByteChar.size()){
-            res.push_back(multiByteChar);
-            multiByteChar="";
-        }
-        multiByteChar+=*s;
-        s++;
-    }
-    if(multiByteChar.size()) res.push_back(multiByteChar);
-    return res;
-}
-
-void ConsoleUI::outputList(vector<string> places){
-    int cell_width[2]={0, 0};
+void ConsoleUI::outputList(){
     int word_size[places.size()];
+    int cell_width[2]={0,0};
     for(int i=0; i<places.size(); i++){
-        word_size[i] = MultiByteCharsToStringsKvass(places[i]).size();
+        word_size[i] = stringToUTF8Container(places[i]).size();
+        if(i%2) rightColWidth = word_size[i];
+        else leftColWidth = word_size[i];
         cell_width[i%2]=max(cell_width[i%2], word_size[i]);
     }
     string svitrinas0 = "";
@@ -60,14 +42,14 @@ void ConsoleUI::outputList(vector<string> places){
         for(int j = word_size[i*2]; j<cell_width[0]; j++){
             cout<<" ";
         }
-        cout << " │ " << places[i*2+1];
+        cout << " │ ";
+        cout << places[i*2+1];
         for(int j = word_size[i*2+1]; j<cell_width[1]; j++){
             cout<<" ";
         }
         cout << " │\n";
         cout << "├──" << svitrinas0 << "┼──" << svitrinas1 << "┤\n";
 	}
-    //hewwo
     cout << "│ ";
     cout << places[places.size() /2 * 2 -2];
     for(int i = word_size[places.size() /2 * 2 -2]; i<cell_width[0]; i++){
@@ -90,11 +72,33 @@ void ConsoleUI::outputList(vector<string> places){
 }
 
 void ConsoleUI::markPlace(string place){
-    //
+    COORD now_coord = GetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE));
+    int place_index = -1;
+    for(int i=0;i<places.size();i++)
+        if(places[i]==place)
+            place_index = i;
+    
+    COORD coord{
+        Y: (place_index)/2 * 2 + 1
+    };
+    if(place_index%2==0)coord.X = 2;
+    else coord.X = leftColWidth + 5;
+    //Set cursor to markable word coordinates
+    SetConsoleCursorPosition(
+        GetStdHandle( STD_OUTPUT_HANDLE ),
+        coord
+    );
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 250);
+    cout<<places[place_index]<<flush;
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 240);
+    //Reset the cursor to previous coordinates
+    SetConsoleCursorPosition(
+        GetStdHandle( STD_OUTPUT_HANDLE ),
+        now_coord
+    );
 }
 
 void ConsoleUI::addLog(string message, int type_code){
-
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), type_code);
     cout<<message<<endl;
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), DEFAULT_CLR);
@@ -105,4 +109,61 @@ void ConsoleUI::queryUser(string& startBoardCoord, string& endBoardCoord){
     cin>>startBoardCoord;
     cout<<"Ievadi objekta nosaukuma beigu koordināti: "<<flush;
     cin>>endBoardCoord;
+}
+
+Coord boardToCartesianCoords(string inputString){
+    Coord coord = {0, 0};
+    for(int i=0; i<inputString.size(); i++){
+        if(inputString[i]>='0' && inputString[i]<='9'){
+            coord.second=coord.second*10 + (int)(inputString[i]-'0');
+            continue;
+        }
+        if(inputString[i]>='A' && inputString[i]<='Z'){
+            coord.first=coord.first*26 + (int)(inputString[i]-'A'+1);
+        }
+    }
+    coord.first--;
+    coord.second--;
+    return coord;
+}
+
+bool validCoordStr(string str){
+    //if the string is too long
+    if(str.size()>5) return false;
+    string letterPart;
+    int i=0;
+    for(;i<str.size();i++){
+        if(str[i]>='0'&&str[i]<='9') break;
+        letterPart += str[i];
+    }
+    //if there are no numbers
+    if(i==str.size()) return false;
+    //if there are too many letters or no letters
+    if(letterPart.size()>2||letterPart.size()==0) return false;
+    if(str[i]=='-') return false;
+    if(str[i]=='0') return false;
+    i++;
+    for(;i<str.size();i++){
+        if(str[i]>='0'&&str[i]<='9') continue;
+        return false;
+    } 
+    return true;
+}
+
+void ConsoleUI::queryUser(Coord& startCoord, Coord& endCoord){
+    
+    string startBoardCoord, endBoardCoord;
+    //acquire both strings
+    queryUser(startBoardCoord, endBoardCoord);
+    //convert both strings to uppercase
+    for(int i=0;i<startBoardCoord.size();i++) startBoardCoord[i] = toupper(startBoardCoord[i]);
+    for(int i=0;i<endBoardCoord.size();i++) endBoardCoord[i] = toupper(endBoardCoord[i]);
+
+    if(validCoordStr(startBoardCoord)==false||validCoordStr(endBoardCoord)==false){
+        addLog("Koordinātes ievadītas nekorekti :(", INFO_MESSAGE);
+        queryUser(startCoord, endCoord);
+    }
+
+    startCoord = boardToCartesianCoords(startBoardCoord);
+    endCoord = boardToCartesianCoords(endBoardCoord);
 }

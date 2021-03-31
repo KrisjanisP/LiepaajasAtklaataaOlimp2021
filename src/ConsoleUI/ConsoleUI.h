@@ -1,22 +1,24 @@
 #include <bits/stdc++.h>
+#include "../Utils/Utils.h"
 #include "windows.h"
 
-#define SUCCESS_MESSAGE FOREGROUND_GREEN | FOREGROUND_INTENSITY
-#define WARNING_MESSAGE FOREGROUND_RED | FOREGROUND_INTENSITY
-#define INFO_MESSAGE    FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
-#define DEFAULT_CLR     FOREGROUND_BLUE | FOREGROUND_GREEN | FOREGROUND_RED | FOREGROUND_INTENSITY
+#define SUCCESS_MESSAGE 242
+#define WARNING_MESSAGE 252
+#define INFO_MESSAGE    249
+#define DEFAULT_CLR     240
 using namespace std;
 
 class ConsoleUI{
 public:
     ConsoleUI(vector<string> places);
     void resetCursor();
-    void outputList(vector<string> places);
-    void markPlace(string place);
     void addLog(string message, int type_code);
     void queryUser(string& startBoardCoord, string& endBoardCoord);
+    void queryUser(Coord& startCoord, Coord& endCoord);
+    void markPlace(string place);
 private:
+    void outputList();
     COORD cursorPosition;
-    vector<string> allPlaces;
-    vector<string> markedPlaces;
+    vector<string> places;
+    int leftColWidth, rightColWidth;
 };

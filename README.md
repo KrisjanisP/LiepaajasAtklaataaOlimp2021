@@ -1,11 +1,15 @@
 # LiepaajasAtklaataaOlimp2021 
 > Uzdevums - izveidot spēli "Burtu jūklis". Liela izmēra tabulā ierakstīti Liepājas objektu nosaukumi; vienā rūtiņā ir viens burts. Spēlētājam jāatrod un jāizsvītro objektu nosaukumi. Spēles noslēgumā no neizsvītotajiem burtiem vai izsvītroto nosaukumu sākuma burtiem spēlētājam jāizveido nākamā apceļojamā objekta nosaukums (katram konkursa dalībniekam tas būs cits).
+## Piezīme
+Esam iekļāvuši jau nokompilētu programmu bin mapē.
+Atliek tikai veikt dubultklikšķi uz bin\main.exe.
 ## Risinājuma darbības princips
-Palaižot run.bat tiek nokompilēts pirmkods, atvērta konsole un ielasīts pilsētu saraksts no cities.config, paturot meklējamo nākamo apceļojamo objektu kā noslēpumu, kurš, kārtējo reizi uzsākot konsoles lietojumprogrammu, nemainās. Konsolē tiek attēlota tabula, veidota no ASCII simboliem. Tabulas dati katrā reizē tiek randomizēti. Pēc spēles pabeigšanas laiks tiek pieglabāts rezultātu teksta failā kā tabula.
+Palaižot build.bat tiek nokompilēts pirmkods bin mapē, atvērta konsole un ielasīts objektu saraksts no places.config un puzles ģenerēšanas iestatījumi no puzzle.config, paturot meklējamo nākamo apceļojamo objektu kā noslēpumu, kurš, kārtējo reizi uzsākot konsoles lietojumprogrammu, nemainās. Konsolē tiek attēlota tabula, veidota no simboliem. Tabulas dati katrā reizē tiek randomizēti. Kad vārda sākuma un beigu koordinātes tiek uzminētas korekti,vārds tiek atzīmēts zaļā krāsā. Kad visi vārdi ir atzīmēti, tabulā tiek izcelti burti sarkanā krāsā, no kuriem jācenšas atminēt viens no Liepājas objektiem. Pēc spēles pabeigšanas laiks tiek pieglabāts rezultātu teksta failā results.txt kopā ar "timestamp", kad šis laiks tika sasniegts.
 ## Darbības vides prasības
 - Operētājsistēma - Windows Vista vai jaunāka.
 - Kompilēšanai:
   - C++11 kompilators
+    - PATH env mainīgajam jāsatur ceļš uz mapi, kurā atrodas g++
   - Boost C++ bibliotēka
 - Pēc iespējas lielāks monitors :D
 ## Pēc noklusējama apskatāmie objekti

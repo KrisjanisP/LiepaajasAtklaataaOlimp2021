@@ -1,4 +1,5 @@
 #include "Table.h"
+#include "../Utils/Utils.h"
 #include <windows.h>
 #include <boost/interprocess/ipc/message_queue.hpp>
 #define BLACK_FG_WHITE_BG_CLR 240
@@ -80,4 +81,33 @@ void Table::updateCell(uint cellY, uint cellX){
     }
     (*messageQueue).send(&tableUpdate, sizeof(tableUpdate), 0);
     printed[cellY][cellX] = buffer[cellY][cellX];
+}
+
+Coord getDirection(Coord start, Coord end){
+    return {
+        (end.first==start.first)?0:(end.first-start.first)/fabs(end.first-start.first),
+        (end.second==start.second)?0:(end.second-start.second)/fabs(end.second-start.second)
+    };
+}
+
+string Table::fetchWord(Coord startCoord, Coord endCoord){
+    string res;
+
+    Coord dir = getDirection(startCoord, endCoord);
+    for(Coord pos=startCoord; pos!=endCoord; pos={pos.first+dir.first, pos.second+dir.second}){
+        res += buffer[pos.second][pos.first].val;
+    }
+    res += buffer[endCoord.second][endCoord.first].val;
+
+    return res;
+}
+
+void Table::markCells(Coord startCoord, Coord endCoord){
+    Coord dir = getDirection(startCoord, endCoord);
+     
+    for(Coord pos=startCoord; pos!=endCoord; pos={pos.first+dir.first, pos.second+dir.second}){
+        buffer[pos.second][pos.first].clr = 250;
+    }
+    buffer[endCoord.second][endCoord.first].clr = 250;
+    update();
 }

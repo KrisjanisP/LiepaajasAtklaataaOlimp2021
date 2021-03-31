@@ -1,4 +1,3 @@
-#include <bits/stdc++.h>
 #include "Puzzle.h"
 
 using namespace std;
@@ -82,19 +81,19 @@ void genPuzzle(int wordIndex, vector<string>& words, Matrix<string>& puzzle, boo
         return ;
     }
     //put the word somewhere ffs
-    vector<string> UTF8Word = MultiByteCharsToStrings(words[wordIndex]);
-    int low_dist_i = 0, low_dist_j = 0, low_dist_d = 0;
-    int high_dist_i = puzzle.rowCount-1;
-    int high_dist_j = puzzle.colCount-1;
-    int high_dist_d = 7;
-    int k_i = low_dist_i + std::rand() % (high_dist_i - low_dist_i); 
-    for(int ii=0;ii<k_i+puzzle.rowCount;ii++){
-        int k_j = low_dist_j + std::rand() % (high_dist_j - low_dist_j);
-        for(int jj=0;jj<k_j+puzzle.colCount;jj++){
-            int k_d = low_dist_d + std::rand() % (high_dist_d - low_dist_d);
+    UTF8Container UTF8Word = MultiByteCharsToStrings(words[wordIndex]);
+    int dir_i = fetchRandomInt(0, 1);
+    int dir_j = fetchRandomInt(0, 1);
+    int k_i = fetchRandomInt(0, puzzle.rowCount-1);
+    for(int ii=k_i;ii<k_i+puzzle.rowCount;ii++){
+        int k_j = fetchRandomInt(0, puzzle.colCount-1);
+        for(int jj=k_j;jj<k_j+puzzle.colCount;jj++){
+            int k_d = fetchRandomInt(0, 7);
             for(int d=k_d;d<k_d+8;d++){
                 int i = ii%puzzle.rowCount;
                 int j = jj%puzzle.colCount;
+                if(dir_i) i = puzzle.rowCount-i-1;
+                if(dir_j) j = puzzle.colCount-j-1;
                 if(canPlace(i,j,d%8,UTF8Word, puzzle)){
                     vector<string> chars; //replaced chars
                     placeWord(chars,i,j,d%8,UTF8Word,puzzle);
