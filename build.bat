@@ -5,7 +5,7 @@ echo Copying confing files
 copy src\Config\places.config bin
 copy src\Config\puzzle.config bin
 echo Compiling main source code
-g++ -w -o bin\main.exe ^
+g++ -w -static-libgcc -static-libstdc++ -o bin\main.exe ^
     src\main.cpp ^
     src\Table\Table.cpp ^
     src\Matrix\Matrix.cpp ^
@@ -16,7 +16,7 @@ g++ -w -o bin\main.exe ^
     -I "C:/Program Files/boost_1_62_0" ^
     || exit /b
 echo Compiling child source code
-g++ -o bin\child.exe ^
+g++ -static-libgcc -static-libstdc++ -o bin\child.exe ^
     src\Child\child-main.cpp ^
     src\Child\child-util.cpp ^
     src\Console\Console.cpp ^
